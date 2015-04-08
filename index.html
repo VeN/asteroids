@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>hello phaser!</title>
+        <script src="js/phaser.js"></script>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+        window.onload = function() {
+
+            var SCREEN_X = 960;
+            var SCREEN_Y = 600;
+
+            var game = new Phaser.Game(SCREEN_X, SCREEN_Y, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+            var ship;
+            var bullets;
+            var bulletTime = 0;
+            var cursors;
+            var screenWrap;
+
+            function preload ()
+            {
+                game.load.image('ship', 'img/ship.png');
+                game.load.image('bg', 'img/bg-space.jpg');
+                game.load.image('bullet', 'img/bullet.png');
+            }
+
+            function create () {
+                game.physics.startSystem(Phaser.Physics.ARCADE);
+                game.add.tileSprite(0, 0, game.width, game.height, 'bg');
+
+                ship = game.add.sprite(SCREEN_X / 2, SCREEN_Y / 2, 'ship');
+                ship.anchor.set(0.5);
+                game.physics.enable(ship, Phaser.Physics.ARCADE);
+                ship.body.drag.set(100);
+                ship.body.maxVelocity.set(200);
+
+                bullets = game.add.group();
+                bullets.enableBody = true;
+                bullets.physicsBodyType = Phaser.Physics.ARCADE;
+                bullets.createMultiple(40, 'bullet');
+                bullets.setAll('anchor.x', 0.5);
+                bullets.setAll('anchor.y', 0.5);
+
+                cursors = game.input.keyboard.createCursorKeys();
+                game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
+            }
+
+            function update()
+            {
+                if (cursors.up.isDown) {
+                    game.physics.arcade.accelerationFromRotation(ship.rotation, 200, ship.body.acceleration);
+                } else {
+                    ship.body.acceleration.set(0);
+                }
+
+                if (cursors.left.isDown) {
+                    ship.body.angularVelocity = -300;
+                } else if (cursors.right.isDown) {
+                    ship.body.angularVelocity = 300;
+                } else {
+                    ship.body.angularVelocity = 0;
+                }
+
+                if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+                    fireBullet();
+                }
+
+                screenWrap(ship);
+                bullets.forEachExists(screenWrap, this);
+                
+            }
+
+            function fireBullet ()
+            {
+                console.log('bullet fired');
+                if (game.time.now > bulletTime) {
+                    bullet = bullets.getFirstExists(false);
+
+                    if (bullet) {
+                        bullet.reset(ship.body.x + 16, ship.body.y + 16);
+                        bullet.lifespan = 2000;
+                        bullet.rotation = ship.rotation;
+                        game.physics.arcade.velocityFromRotation(ship.rotation, 400, bullet.body.velocity);
+                        bulletTime = game.time.now + 50;
+                    }
+                }
+
+            }
+
+            function screenWrap (sprite) {
+
+                if (sprite.x < 0)
+                {
+                    sprite.x = game.width;
+                }
+                else if (sprite.x > game.width)
+                {
+                    sprite.x = 0;
+                }
+
+                if (sprite.y < 0)
+                {
+                    sprite.y = game.height;
+                }
+                else if (sprite.y > game.height)
+                {
+                    sprite.y = 0;
+                }
+
+            }
+        };
+
+    </script>
+
+    </body>
+</html>
