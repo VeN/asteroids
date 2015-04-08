@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
-        <script src="js/phaser.js"></script>
+        <script src="js/phaser.min.js"></script>
     </head>
     <body>
 
@@ -17,7 +17,8 @@
 
             var ship;
             var bullets;
-            var bulletTime = 0;
+            var asteroids;
+            var asteroidTime = bulletTime = 0;
             var cursors;
             var screenWrap;
 
@@ -26,6 +27,7 @@
                 game.load.image('ship', 'img/ship.png');
                 game.load.image('bg', 'img/bg-space.jpg');
                 game.load.image('bullet', 'img/bullet.png');
+                game.load.image('asteroid', 'img/asteroid.png');
             }
 
             function create () {
@@ -38,6 +40,13 @@
                 ship.body.drag.set(100);
                 ship.body.maxVelocity.set(200);
 
+                asteroids = game.add.group();
+                asteroids.enableBody = true;
+                asteroids.physicsBodyType = Phaser.Physics.ARCADE;
+                asteroids.createMultiple(5, 'asteroid');
+                asteroids.setAll('anchor.x', 0.5);
+                asteroids.setAll('anchor.y', 0.5);
+
                 bullets = game.add.group();
                 bullets.enableBody = true;
                 bullets.physicsBodyType = Phaser.Physics.ARCADE;
@@ -47,6 +56,8 @@
 
                 cursors = game.input.keyboard.createCursorKeys();
                 game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
+                game.input.keyboard.addKeyCapture([Phaser.Keyboard.A]);
+
             }
 
             function update()
@@ -69,14 +80,17 @@
                     fireBullet();
                 }
 
+                if (Math.ceil(100 * Math.random() > 95)) {
+                    launchAsteroid();
+                }
+
                 screenWrap(ship);
                 bullets.forEachExists(screenWrap, this);
-                
+                asteroids.forEachExists(screenWrap, this);
             }
 
             function fireBullet ()
             {
-                console.log('bullet fired');
                 if (game.time.now > bulletTime) {
                     bullet = bullets.getFirstExists(false);
 
@@ -88,7 +102,40 @@
                         bulletTime = game.time.now + 50;
                     }
                 }
+            }
 
+            function launchAsteroid()
+            {
+                if (game.time.now > asteroidTime) {
+                    asteroid = asteroids.getFirstExists(false);
+
+                    if (asteroid) {
+
+                        var randPos = Math.ceil(3 * Math.random());
+                        switch(randPos) {
+                            case 0:
+                                asteroid.reset(SCREEN_X * Math.random(), 0);
+                                break;
+                            case 1:
+                                asteroid.reset(0, SCREEN_Y * Math.random());
+                                break;
+                            case 2:
+                                asteroid.reset(SCREEN_X * Math.random(), 0);
+                                break;
+                            case 4:
+                                asteroid.reset(SCREEN_X * Math.random(), 0);
+                                break;
+                            default:
+                                break;
+                        }
+
+
+
+                        asteroid.lifespan = 20000;
+                        game.physics.arcade.velocityFromRotation(360 * Math.random(), 100 * Math.random(), asteroid.body.velocity);
+                        asteroidTime = game.time.now + 500;
+                    }
+                }
             }
 
             function screenWrap (sprite) {
