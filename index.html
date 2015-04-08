@@ -84,6 +84,10 @@
                     launchAsteroid();
                 }
 
+                for (var i = asteroids.children.length - 1; i >= 0; i--) {
+                    asteroids.children[i].rotation += 0.05;
+                };
+
                 screenWrap(ship);
                 bullets.forEachExists(screenWrap, this);
                 asteroids.forEachExists(screenWrap, this);
@@ -130,8 +134,8 @@
                         }
 
 
-
                         asteroid.lifespan = 20000;
+                        asteroid.rotation = Math.random() * 360;
                         game.physics.arcade.velocityFromRotation(360 * Math.random(), 100 * Math.random(), asteroid.body.velocity);
                         asteroidTime = game.time.now + 500;
                     }
