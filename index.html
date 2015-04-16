@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>hello phaser!</title>
+        <title>Asteroids</title>
         <script src="js/phaser.min.js"></script>
     </head>
     <body>
@@ -21,6 +21,8 @@
             var asteroidTime = bulletTime = 0;
             var cursors;
             var screenWrap;
+            var score = 0;
+            var scoreText;
 
             function preload ()
             {
@@ -58,10 +60,14 @@
                 game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
                 game.input.keyboard.addKeyCapture([Phaser.Keyboard.A]);
 
+                scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#ff0' });
             }
 
             function update()
             {
+                game.physics.arcade.collide(ship, asteroids);
+                game.physics.arcade.overlap(bullets, asteroids, asteroidDown, null, this);
+
                 if (cursors.up.isDown) {
                     game.physics.arcade.accelerationFromRotation(ship.rotation, 200, ship.body.acceleration);
                 } else {
@@ -95,7 +101,7 @@
 
             function fireBullet ()
             {
-                if (game.time.now > bulletTime) {
+                if (game.time.now > bulletTime + 100) {
                     bullet = bullets.getFirstExists(false);
 
                     if (bullet) {
@@ -162,6 +168,15 @@
                     sprite.y = 0;
                 }
 
+            }
+
+            function asteroidDown(bullet, asteroid)
+            {
+                bullet.kill();
+                asteroid.kill();
+
+                score++;
+                scoreText.text = 'Score: ' + score;
             }
         };
 
