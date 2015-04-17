@@ -11,7 +11,7 @@
         window.onload = function() {
 
             var SCREEN_X = 960;
-            var SCREEN_Y = 600;
+            var SCREEN_Y = 540;
 
             var game = new Phaser.Game(SCREEN_X, SCREEN_Y, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
@@ -22,12 +22,12 @@
             var cursors;
             var screenWrap;
             var score = 0;
-            var scoreText;
+            var textScore;
 
             function preload ()
             {
                 game.load.image('ship', 'img/ship.png');
-                game.load.image('bg', 'img/bg-space.jpg');
+                game.load.image('bg', 'img/bg.jpg');
                 game.load.image('bullet', 'img/bullet.png');
                 game.load.image('asteroid', 'img/asteroid.png');
             }
@@ -45,7 +45,7 @@
                 asteroids = game.add.group();
                 asteroids.enableBody = true;
                 asteroids.physicsBodyType = Phaser.Physics.ARCADE;
-                asteroids.createMultiple(5, 'asteroid');
+                asteroids.createMultiple(30, 'asteroid');
                 asteroids.setAll('anchor.x', 0.5);
                 asteroids.setAll('anchor.y', 0.5);
 
@@ -60,16 +60,20 @@
                 game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
                 game.input.keyboard.addKeyCapture([Phaser.Keyboard.A]);
 
-                scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#ff0' });
+                textScore = game.add.text(16, 16, 'score: 0', { fontSize: '20px', fill: '#ff0' });
+                textHelp = game.add.text(16, SCREEN_Y - 50, 'move: arrows\nfire: spacebar', { fontSize: '12px', fill: '#ff0' });
+
             }
 
             function update()
             {
-                game.physics.arcade.collide(ship, asteroids);
+                game.physics.arcade.collide(ship, asteroids, shipDown, null, this);
                 game.physics.arcade.overlap(bullets, asteroids, asteroidDown, null, this);
 
                 if (cursors.up.isDown) {
                     game.physics.arcade.accelerationFromRotation(ship.rotation, 200, ship.body.acceleration);
+                } else if (cursors.down.isDown) {
+                    game.physics.arcade.accelerationFromRotation(ship.rotation, -100, ship.body.acceleration);
                 } else {
                     ship.body.acceleration.set(0);
                 }
@@ -86,7 +90,7 @@
                     fireBullet();
                 }
 
-                if (Math.ceil(100 * Math.random() > 95)) {
+                if (Math.ceil(100 * Math.random() > 75)) {
                     launchAsteroid();
                 }
 
@@ -118,6 +122,7 @@
             {
                 if (game.time.now > asteroidTime) {
                     asteroid = asteroids.getFirstExists(false);
+                    asteroid.life = 5;
 
                     if (asteroid) {
 
@@ -139,10 +144,9 @@
                                 break;
                         }
 
-
                         asteroid.lifespan = 20000;
                         asteroid.rotation = Math.random() * 360;
-                        game.physics.arcade.velocityFromRotation(360 * Math.random(), 100 * Math.random(), asteroid.body.velocity);
+                        game.physics.arcade.velocityFromRotation(360 * Math.random(), 200 * Math.random(), asteroid.body.velocity);
                         asteroidTime = game.time.now + 500;
                     }
                 }
@@ -173,10 +177,21 @@
             function asteroidDown(bullet, asteroid)
             {
                 bullet.kill();
+                if (--asteroid.life > 0) {
+                    return;
+                }
+                
                 asteroid.kill();
 
                 score++;
-                scoreText.text = 'Score: ' + score;
+                textScore.text = 'Score: ' + score;
+            }
+
+            function shipDown(ship)
+            {
+                ship.kill();
+                var finalScore = game.add.text(SCREEN_X / 2, SCREEN_Y / 2, 'Final score: ' + score, { fontSize: '64px', fill: '#ff0' });
+                finalScore.anchor.set(0.5);
             }
         };
 
