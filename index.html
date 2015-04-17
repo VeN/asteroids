@@ -122,6 +122,7 @@
             {
                 if (game.time.now > asteroidTime) {
                     asteroid = asteroids.getFirstExists(false);
+                    asteroid.life = 5;
 
                     if (asteroid) {
 
@@ -142,7 +143,6 @@
                             default:
                                 break;
                         }
-
 
                         asteroid.lifespan = 20000;
                         asteroid.rotation = Math.random() * 360;
@@ -177,6 +177,10 @@
             function asteroidDown(bullet, asteroid)
             {
                 bullet.kill();
+                if (--asteroid.life > 0) {
+                    return;
+                }
+                
                 asteroid.kill();
 
                 score++;
