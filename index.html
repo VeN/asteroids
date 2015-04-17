@@ -67,7 +67,7 @@
 
             function update()
             {
-                game.physics.arcade.collide(ship, asteroids);
+                game.physics.arcade.collide(ship, asteroids, shipDown, null, this);
                 game.physics.arcade.overlap(bullets, asteroids, asteroidDown, null, this);
 
                 if (cursors.up.isDown) {
@@ -180,7 +180,14 @@
                 asteroid.kill();
 
                 score++;
-                scoreText.text = 'Score: ' + score;
+                textScore.text = 'Score: ' + score;
+            }
+
+            function shipDown(ship)
+            {
+                ship.kill();
+                var finalScore = game.add.text(SCREEN_X / 2, SCREEN_Y / 2, 'Final score: ' + score, { fontSize: '64px', fill: '#ff0' });
+                finalScore.anchor.set(0.5);
             }
         };
 

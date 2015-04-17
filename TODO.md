@@ -1,5 +1,5 @@
 H - nefunguje zpatecka
-- kolize rakety s asteroidem raketu neznici
+H - kolize rakety s asteroidem raketu neznici
 H - vypsat help pomoci textu, ne pres pozadi na plose
 - realnejsi kolize - ke kolizi dojde nekolik pixelu pred spritem
 - vygenerovat vice asteroidu a prodlouzit jim zivotnost
