@@ -11,7 +11,7 @@
         window.onload = function() {
 
             var SCREEN_X = 960;
-            var SCREEN_Y = 600;
+            var SCREEN_Y = 540;
 
             var game = new Phaser.Game(SCREEN_X, SCREEN_Y, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
@@ -27,7 +27,7 @@
             function preload ()
             {
                 game.load.image('ship', 'img/ship.png');
-                game.load.image('bg', 'img/bg-space.jpg');
+                game.load.image('bg', 'img/bg.jpg');
                 game.load.image('bullet', 'img/bullet.png');
                 game.load.image('asteroid', 'img/asteroid.png');
             }
@@ -60,7 +60,9 @@
                 game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
                 game.input.keyboard.addKeyCapture([Phaser.Keyboard.A]);
 
-                scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#ff0' });
+                textScore = game.add.text(16, 16, 'score: 0', { fontSize: '20px', fill: '#ff0' });
+                textHelp = game.add.text(16, SCREEN_Y - 50, 'move: arrows\nfire: spacebar', { fontSize: '12px', fill: '#ff0' });
+
             }
 
             function update()
