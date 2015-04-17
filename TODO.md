@@ -1,4 +1,4 @@
-- nefunguje zpatecka
+H - nefunguje zpatecka
 - kolize rakety s asteroidem raketu neznici
 H - vypsat help pomoci textu, ne pres pozadi na plose
 - realnejsi kolize - ke kolizi dojde nekolik pixelu pred spritem

@@ -72,6 +72,8 @@
 
                 if (cursors.up.isDown) {
                     game.physics.arcade.accelerationFromRotation(ship.rotation, 200, ship.body.acceleration);
+                } else if (cursors.down.isDown) {
+                    game.physics.arcade.accelerationFromRotation(ship.rotation, -100, ship.body.acceleration);
                 } else {
                     ship.body.acceleration.set(0);
                 }
