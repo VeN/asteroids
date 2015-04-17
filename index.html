@@ -45,7 +45,7 @@
                 asteroids = game.add.group();
                 asteroids.enableBody = true;
                 asteroids.physicsBodyType = Phaser.Physics.ARCADE;
-                asteroids.createMultiple(5, 'asteroid');
+                asteroids.createMultiple(30, 'asteroid');
                 asteroids.setAll('anchor.x', 0.5);
                 asteroids.setAll('anchor.y', 0.5);
 
@@ -90,7 +90,7 @@
                     fireBullet();
                 }
 
-                if (Math.ceil(100 * Math.random() > 95)) {
+                if (Math.ceil(100 * Math.random() > 75)) {
                     launchAsteroid();
                 }
 
